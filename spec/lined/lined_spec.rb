@@ -105,6 +105,12 @@ module Lined
 
           expect { lined.only(/This/) }.to raise_error(RuntimeError)
         end
+
+        it "fails if there are no matches" do
+          lined = getLined ""
+
+          expect { lined.only(/This/) }.to raise_error(RuntimeError)
+        end
       end
 
       context "without arguments" do
@@ -113,8 +119,13 @@ module Lined
 
           expect(lined.only).to eq(LINE)
         end
-        it "fails if there are no arguments and the file has more than one line" do
+        it "fails if the file has more than one line" do
           expect { @lined.only }.to raise_error(RuntimeError)
+        end
+
+        it "fails if there are no lines in the file" do
+          lined = getLined ""
+          expect { lined.only }.to raise_error(RuntimeError)
         end
       end
     end
@@ -192,6 +203,10 @@ module Lined
 
       it "throws an exception if the index is invalid" do
         expect { lined.line_indices(3) }.to raise_error(IndexError)
+      end
+
+      it "throws an exception if the descriptor isn't a regex or integer" do
+        expect { lined.line_indices('test') }.to raise_error(ArgumentError)
       end
     end
 
